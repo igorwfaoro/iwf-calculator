@@ -37,4 +37,8 @@ public class CalculationService {
         var calculations = calculationRepository.findAll();
         return calculations.stream().map(CalculationViewDto::fromEntity).toList();
     }
+
+    public void clear() {
+        calculationRepository.deleteAll();
+    }
 }

@@ -25,4 +25,9 @@ public class CalculationController {
     public List<CalculationViewDto> getAll() {
         return calculationService.getAll();
     }
+
+    @DeleteMapping(ApiConstants.RESOURCE_CLEAR)
+    public void clear() {
+        calculationService.clear();
+    }
 }
