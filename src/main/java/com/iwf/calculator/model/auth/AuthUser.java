@@ -1,22 +1,25 @@
-package com.iwf.calculator.model.dto.auth;
+package com.iwf.calculator.model.auth;
 
 import com.iwf.calculator.model.entity.User;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-public class UserAuth {
+@Data
+public class AuthUser {
 
     private Long id;
     private String username;
     private String fullName;
     private LocalDateTime createdAt;
 
-    public static UserAuth fromUser(User entity) {
-        var viewDto = new UserAuth();
+    public static AuthUser fromEntity(User entity) {
+        var viewDto = new AuthUser();
         viewDto.id = entity.getId();
         viewDto.username = entity.getUsername();
         viewDto.fullName = entity.getFullName();
         viewDto.createdAt = entity.getCreatedAt();
         return viewDto;
     }
+
 }

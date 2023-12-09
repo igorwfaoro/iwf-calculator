@@ -1,19 +1,18 @@
 package com.iwf.calculator.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.iwf.calculator.exception.AuthenticationException;
-import com.iwf.calculator.model.dto.auth.UserAuth;
+import com.iwf.calculator.model.auth.AuthUser;
 import com.iwf.calculator.model.dto.input.AuthInputDto;
-import com.iwf.calculator.model.dto.view.AuthViewDto;
+import com.iwf.calculator.model.auth.AuthResult;
 import com.iwf.calculator.repository.IUserRepository;
-import com.iwf.calculator.util.JsonUtil;
-import com.iwf.calculator.util.JwtTokenUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,74 +22,70 @@ public class AuthService {
 
     private static final long JWT_TOKEN_VALIDITY_HOURS = 168;
 
+    private static  final String USER_ID_CLAIM = "user-id";
+
     @Value("${jwt.secret}")
     private String secret;
 
     @Autowired
     private IUserRepository userRepository;
 
-    public AuthViewDto login(AuthInputDto input) {
+    public AuthResult authenticate(AuthInputDto input) throws AuthenticationException {
+        var user = userRepository.findOneByUsername(input.getUsername());
+
+        if (user.isEmpty() || !BCrypt.checkpw(input.getPassword(), user.get().getPassword())) {
+            throw new AuthenticationException();
+        }
+
+        var authUser = AuthUser.fromEntity(user.get());
+
+        try {
+            var token = makeToken(authUser);
+            return AuthResult.create(authUser, token);
+        } catch (JsonProcessingException e) {
+            throw new AuthenticationException();
+        }
+    }
+
+    public AuthResult refresh() throws AuthenticationException {
+        try {
+            AuthUser user = getAuthenticatedUser();
+            return AuthResult.create(user, makeToken(user));
+        } catch (JsonProcessingException e) {
+            throw new AuthenticationException();
+        }
+    }
+
+    public AuthUser getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof AuthUser) {
+            return (AuthUser) authentication.getPrincipal();
+        }
         return null;
     }
 
-    public AuthViewDto authenticate(AuthInputDto input) throws AuthenticationException {
-        var user = userRepository.findOneByUsername(input.getUsername());
+    public AuthUser validateToken(String token) throws AuthenticationException {
+        var decodedToken = JWT.require(Algorithm.HMAC256(secret))
+                .build()
+                .verify(token);
 
-        if (user.isEmpty()) {
+        Long userId = decodedToken.getClaim(USER_ID_CLAIM).asLong();
+
+        var user = userRepository.findById(userId);
+
+        if(user.isEmpty()) {
             throw new AuthenticationException();
         }
 
-        var userAuth = UserAuth.fromUser(user.get());
-
-        try {
-            var token = makeToken(userAuth);
-            return AuthViewDto.create(userAuth, token);
-        } catch (JsonProcessingException e) {
-            throw new AuthenticationException();
-        }
+        return AuthUser.fromEntity(user.get());
     }
 
-    public AuthViewDto refresh() throws AuthenticationException {
-        try {
-            UserAuth user = JwtTokenUtil.getTokenPayload(UserAuth.class);
-            return AuthViewDto.create(user, makeToken(user));
-        } catch (JsonProcessingException e) {
-            throw new AuthenticationException();
-        }
-    }
-
-//    public UserAuth getAuthenticatedUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.getPrincipal() != null
-//                && authentication.getPrincipal() instanceof UserAuth) {
-//            return (UserAuth) authentication.getPrincipal();
-//        }
-//        return null;
-//    }
-
-    public Boolean validateToken(String token) throws JsonProcessingException {
-        UserAuth user = null;
-        try {
-            user = JwtTokenUtil.getTokenPayload(token, UserAuth.class);
-        } catch(Exception e) {
-            return false;
-        }
-        if(user == null)
-            return false;
-
-        // TODO: resolve this
-//        if (new Date().after(user.getExp()))
-//            return false;
-
-        return true;
-    }
-
-    private String makeToken(UserAuth user) throws JsonProcessingException {
-        return Jwts.builder()
-                .setPayload(JsonUtil.serialize(user))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY_HOURS * 60 * 60 * 1000))
-                .compact();
+    private String makeToken(AuthUser user) throws JsonProcessingException {
+        return JWT.create()
+                .withClaim(USER_ID_CLAIM, user.getId())
+                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY_HOURS * 60 * 60 * 1000))
+                .sign(Algorithm.HMAC256(secret));
     }
 
 }
