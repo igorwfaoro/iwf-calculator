@@ -4,6 +4,7 @@ import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.dto.view.CalculationViewDto;
 import com.iwf.calculator.model.entity.Calculation;
 import com.iwf.calculator.repository.ICalculationRepository;
+import com.iwf.calculator.service.interfaces.ICalculationService;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CalculationService {
+public class CalculationService implements ICalculationService {
 
     @Autowired
     private ICalculationRepository calculationRepository;

@@ -8,6 +8,7 @@ import com.iwf.calculator.model.auth.AuthUser;
 import com.iwf.calculator.model.dto.input.AuthInputDto;
 import com.iwf.calculator.model.auth.AuthResult;
 import com.iwf.calculator.repository.IUserRepository;
+import com.iwf.calculator.service.interfaces.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private static final long JWT_TOKEN_VALIDITY_HOURS = 168;
 

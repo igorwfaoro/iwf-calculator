@@ -3,7 +3,7 @@ package com.iwf.calculator.controller;
 import com.iwf.calculator.constant.ApiConstants;
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.dto.view.CalculationViewDto;
-import com.iwf.calculator.service.CalculationService;
+import com.iwf.calculator.service.interfaces.ICalculationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class CalculationController {
 
     @Autowired
-    private CalculationService calculationService;
+    private ICalculationService calculationService;
 
     @PostMapping(ApiConstants.RESOURCE_CALCULATE)
     public CalculationViewDto calculate(@RequestBody CalculationInputDto input) {
