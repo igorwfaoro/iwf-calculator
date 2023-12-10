@@ -1,3 +1,6 @@
+drop table if exists Calculations;
+drop table if exists Users;
+
 create table Calculations (
     id bigint not null primary key auto_increment,
     expression text not null,
