@@ -1,4 +1,4 @@
-package com.iwf.calculator.services;
+package com.iwf.calculator.service;
 
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.entity.Calculation;

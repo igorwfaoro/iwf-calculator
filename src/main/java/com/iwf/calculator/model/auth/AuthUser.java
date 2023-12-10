@@ -1,13 +1,16 @@
 package com.iwf.calculator.model.auth;
 
 import com.iwf.calculator.model.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthUser {
-
     private Long id;
     private String username;
     private String fullName;
@@ -21,5 +24,4 @@ public class AuthUser {
         viewDto.createdAt = entity.getCreatedAt();
         return viewDto;
     }
-
 }

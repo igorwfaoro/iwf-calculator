@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class CalculationViewDto {
-
     private Long id;
     private String expression;
     private Float result;

@@ -2,6 +2,7 @@ package com.iwf.calculator.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.iwf.calculator.exception.AuthenticationException;
 import com.iwf.calculator.model.auth.AuthUser;
@@ -20,10 +21,9 @@ import java.util.Date;
 
 @Service
 public class AuthService implements IAuthService {
-
     private static final long JWT_TOKEN_VALIDITY_HOURS = 168;
 
-    private static  final String USER_ID_CLAIM = "user-id";
+    private static final String USER_ID_CLAIM = "user-id";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -67,15 +67,21 @@ public class AuthService implements IAuthService {
     }
 
     public AuthUser validateToken(String token) throws AuthenticationException {
-        var decodedToken = JWT.require(Algorithm.HMAC256(secret))
-                .build()
-                .verify(token);
+
+        DecodedJWT decodedToken;
+        try {
+            decodedToken = JWT.require(Algorithm.HMAC256(secret))
+                    .build()
+                    .verify(token);
+        } catch (Exception e) {
+            throw new AuthenticationException();
+        }
 
         Long userId = decodedToken.getClaim(USER_ID_CLAIM).asLong();
 
         var user = userRepository.findById(userId);
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new AuthenticationException();
         }
 
