@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    name: Setup Gcloud Account
+    name: Setup GCloud Account
     runs-on: ubuntu-latest
     environment: hw-prod
     env:
