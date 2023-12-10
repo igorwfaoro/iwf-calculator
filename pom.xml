@@ -64,6 +64,7 @@
 
 	<build>
 		<defaultGoal>install</defaultGoal>
+		<finalName>iwf-calculator</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
