@@ -22,7 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class AuthServiceTest {
+public class AuthServiceUnitTest {
     private AuthInputDto mockInputDto;
     private User mockUser;
     private AuthUser mockAuthUser;

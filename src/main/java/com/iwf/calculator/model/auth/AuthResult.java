@@ -1,8 +1,6 @@
 package com.iwf.calculator.model.auth;
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
 public class AuthResult {
 

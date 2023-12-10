@@ -4,7 +4,6 @@ import com.iwf.calculator.exception.ExpressionException;
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.entity.Calculation;
 import com.iwf.calculator.repository.ICalculationRepository;
-import com.iwf.calculator.service.CalculationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class CalculationServiceTest {
+public class CalculationServiceUnitTest {
 
     @Mock
     private ICalculationRepository calculationRepository;

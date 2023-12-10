@@ -1,13 +1,17 @@
 package com.iwf.calculator.model.dto.view;
 
 import com.iwf.calculator.model.entity.Calculation;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CalculationViewDto {
     private Long id;
     private String expression;
