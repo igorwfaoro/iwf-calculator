@@ -1,0 +1,29 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  stale_branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stale Branches
+        uses: crs-k/stale-branches@v2.0.1
+        with:
+          days-before-stale: 93
+          days-before-delete: 95
+  stale_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-issue-message: 'This issue is stale because it has been open 90 days with no activity. Remove stale label or comment or this will be closed in 2 days.'
+          days-before-stale: 90
+          days-before-close: 2
+          delete-branch: true
