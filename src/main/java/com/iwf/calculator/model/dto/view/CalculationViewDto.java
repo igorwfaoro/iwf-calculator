@@ -3,6 +3,10 @@ package com.iwf.calculator.model.dto.view;
 import com.iwf.calculator.model.entity.Calculation;
 import lombok.Data;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 @Data
 public class CalculationViewDto {
     private Long id;
@@ -13,7 +17,13 @@ public class CalculationViewDto {
         var viewDto = new CalculationViewDto();
         viewDto.id = entity.getId();
         viewDto.expression = entity.getExpression();
-        viewDto.result = entity.getResult();
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ROOT);
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("#.##", symbols);
+
+        viewDto.result = Float.parseFloat(df.format(entity.getResult()));
+
         return viewDto;
     }
 }

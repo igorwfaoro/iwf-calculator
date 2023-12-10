@@ -1,5 +1,6 @@
 package com.iwf.calculator.service;
 
+import com.iwf.calculator.exception.ExpressionException;
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.dto.view.CalculationViewDto;
 import com.iwf.calculator.model.entity.Calculation;
@@ -17,16 +18,21 @@ public class CalculationService implements ICalculationService {
     @Autowired
     private ICalculationRepository calculationRepository;
 
-    public CalculationViewDto calculate(CalculationInputDto input) {
+    public CalculationViewDto calculate(CalculationInputDto input) throws ExpressionException {
         var existentCalculation = calculationRepository.findOneByExpression(input.getExpression());
 
-        if(existentCalculation.isPresent()) {
+        if (existentCalculation.isPresent()) {
             return CalculationViewDto.fromEntity(existentCalculation.get());
         }
 
-        var result = (float) new ExpressionBuilder(input.getExpression())
-                .build()
-                .evaluate();
+        float result;
+        try {
+            result = (float) new ExpressionBuilder(input.getExpression())
+                    .build()
+                    .evaluate();
+        } catch (ArithmeticException e) {
+            throw new ExpressionException(e.getMessage());
+        }
 
         var newCalculation = Calculation.create(input.getExpression(), result);
         calculationRepository.save(newCalculation);

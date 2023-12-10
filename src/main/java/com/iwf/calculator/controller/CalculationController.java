@@ -1,6 +1,7 @@
 package com.iwf.calculator.controller;
 
 import com.iwf.calculator.constant.ApiConstants;
+import com.iwf.calculator.exception.ExpressionException;
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.dto.view.CalculationViewDto;
 import com.iwf.calculator.service.interfaces.ICalculationService;
@@ -17,7 +18,7 @@ public class CalculationController {
     private ICalculationService calculationService;
 
     @PostMapping(ApiConstants.RESOURCE_CALCULATE)
-    public CalculationViewDto calculate(@RequestBody CalculationInputDto input) {
+    public CalculationViewDto calculate(@RequestBody CalculationInputDto input) throws ExpressionException {
         return calculationService.calculate(input);
     }
 

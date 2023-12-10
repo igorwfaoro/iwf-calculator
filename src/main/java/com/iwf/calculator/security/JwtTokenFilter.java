@@ -36,7 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (Arrays.stream(REQUESTS_PATHS_WHITELIST).anyMatch(path -> path.equals(request.getServletPath()))) {
+        if (Arrays.stream(REQUESTS_PATHS_WHITELIST).anyMatch(path -> path.equals(request.getRequestURI()))) {
             filterChain.doFilter(request, response);
             return;
         }

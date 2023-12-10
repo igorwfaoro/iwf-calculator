@@ -1,5 +1,6 @@
 package com.iwf.calculator.service;
 
+import com.iwf.calculator.exception.ExpressionException;
 import com.iwf.calculator.model.dto.input.CalculationInputDto;
 import com.iwf.calculator.model.entity.Calculation;
 import com.iwf.calculator.repository.ICalculationRepository;
@@ -33,7 +34,7 @@ public class CalculationServiceTest {
     }
 
     @Test
-    public void shouldSaveNewExpression() {
+    public void shouldSaveNewExpression() throws ExpressionException {
 
         var input = new CalculationInputDto("2+2");
         var calculation = new Calculation(1L, input.getExpression(), 4F, LocalDateTime.of(2024, 12, 9, 17, 30));
@@ -49,7 +50,7 @@ public class CalculationServiceTest {
     }
 
     @Test
-    public void shouldReturnExistingCalculation() {
+    public void shouldReturnExistingCalculation() throws ExpressionException {
         var input = new CalculationInputDto("2+2");
         var calculation = new Calculation(1L, input.getExpression(), 4F, LocalDateTime.of(2024, 12, 9, 17, 30));
 
