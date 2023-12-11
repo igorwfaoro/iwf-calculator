@@ -16,7 +16,7 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                .info(new Info().title("IWF Calculator API").version("1.0.1"));
+                .info(new Info().title("IWF Calculator API").version("1.0.0"));
     }
 
     private SecurityScheme createAPIKeyScheme() {
