@@ -2,6 +2,7 @@ package com.iwf.calculator.controller;
 
 
 import com.iwf.calculator.exception.AuthenticationException;
+import com.iwf.calculator.exception.AuthorizationException;
 import com.iwf.calculator.exception.ExpressionException;
 import com.iwf.calculator.model.dto.view.ErrorViewDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +54,12 @@ public class ControllerAdvisor {
     @ExceptionHandler(AuthenticationException.class)
     public ErrorViewDto handleExceptions(AuthenticationException ex) {
         return ErrorViewDto.create(ex.getMessage(), HttpStatus.FORBIDDEN.value());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthorizationException.class)
+    public ErrorViewDto handleExceptions(AuthorizationException ex) {
+        return ErrorViewDto.create(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

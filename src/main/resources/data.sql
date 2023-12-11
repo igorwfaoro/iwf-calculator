@@ -23,6 +23,6 @@ insert into Calculations (expression, result) values
 ('10-3', 7);
 
 insert into Users (username, fullName, password) values
-('sopongebob', 'SpongeBob SquarePants', '$2a$10$NkxZUB.Mcypa4ffulOnUgOLZ.8VKSCR.34nZZzBF19Xzm.V1ce9r6'), -- pass: sponge123
+('spongebob', 'SpongeBob SquarePants', '$2a$10$NkxZUB.Mcypa4ffulOnUgOLZ.8VKSCR.34nZZzBF19Xzm.V1ce9r6'), -- pass: sponge123
 ('patrick', 'Patrick Star', '$2a$10$PeOSL54bGFSBRilJp7XfZuIeP70LThlLbTct4.emWEl1EjNTzcl7.'), -- pass: patrick@star
 ('testuser', 'Test User', '$2a$10$.Kx3fKiTTt8AT/GtIwLwd.OkEwVyJW8BUENMGq9aDvHaCKA3hh7qq'); -- pass: password

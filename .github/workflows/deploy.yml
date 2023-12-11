@@ -1,39 +1,69 @@
-name: Deploy
+name: Java CI/CD
 
 on:
   push:
     branches: [main]
 
 jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java environment
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: Build with Maven
+        run: mvn clean install -B -DskipTests
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Publish test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: target/surefire-reports
+
   deploy:
-    name: Setup GCloud Account
+    needs: build-and-test
     runs-on: ubuntu-latest
     environment: gcp-prod
     env:
       IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/site:latest
     steps:
-      # Git checkout
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      # Login to GCP
-      - uses: google-github-actions/setup-gcloud@v0.2.0
+      - name: Setup GCloud Account
+        uses: google-github-actions/setup-gcloud@v0.2.0
         with:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      # gcloud configure docker
       - name: Configure Docker
         run: gcloud auth configure-docker --quiet
 
-      # build image
       - name: Build Docker image
         run: docker build -t $IMAGE_NAME .
 
-      # push image to registry
       - name: Push Docker image
         run: docker push $IMAGE_NAME
 
-      # deploy image
+      - name: Check Test Status
+        id: check_test_status
+        run: |
+          if [ -f "test-results/test-report.xml" ]; then
+            echo "::set-output name=test_passed::true"
+          else
+            echo "::set-output name=test_passed::false"
+          fi
+        shell: bash
+
       - name: Deploy Docker image
+        if: steps.check_test_status.outputs.test_passed == 'true'
         run: gcloud run deploy site --image $IMAGE_NAME --region us-central1 --memory 512Mi --min-instances 0 --max-instances 1 --platform managed --port 8080 --allow-unauthenticated

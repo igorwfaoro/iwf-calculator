@@ -1,6 +1,7 @@
 package com.iwf.calculator.service;
 
 import com.iwf.calculator.exception.AuthenticationException;
+import com.iwf.calculator.exception.AuthorizationException;
 import com.iwf.calculator.model.auth.AuthResult;
 import com.iwf.calculator.model.dto.input.AuthInputDto;
 import com.iwf.calculator.model.auth.AuthUser;
@@ -84,7 +85,7 @@ public class AuthServiceUnitTest {
     }
 
     @Test
-    public void shouldValidateTokenWithValidToken() throws AuthenticationException {
+    public void shouldValidateTokenWithValidToken() throws AuthorizationException {
         String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyLWlkIjoxLCJleHAiOjIwMTc3NTI3MDZ9.UfYeP-zw3dxJd0pyVn_jp9UjHoJzUJFEgjUHZw1kNOE";
 
         when(userRepository.findById(mockAuthUser.getId())).thenReturn(Optional.of(mockUser));
@@ -98,7 +99,7 @@ public class AuthServiceUnitTest {
     @Test
     public void shouldThrowAuthenticationExceptionWhenValidateTokenWithInvalidToken() {
         String invalidToken = "invalid_token";
-        assertThrows(AuthenticationException.class, () -> authService.validateToken(invalidToken));
+        assertThrows(AuthorizationException.class, () -> authService.validateToken(invalidToken));
     }
 
     @Test

@@ -113,7 +113,7 @@ public class CalculationControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Division by zero!"));
+                .andExpect(jsonPath("$.error").value("Division by zero!"));
     }
 
     @Test

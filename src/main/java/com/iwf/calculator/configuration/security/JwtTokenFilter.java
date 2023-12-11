@@ -1,8 +1,9 @@
-package com.iwf.calculator.security;
+package com.iwf.calculator.configuration.security;
 
 import com.auth0.jwt.JWT;
 import com.iwf.calculator.constant.ApiConstants;
 import com.iwf.calculator.exception.AuthenticationException;
+import com.iwf.calculator.exception.AuthorizationException;
 import com.iwf.calculator.model.auth.AuthUser;
 import com.iwf.calculator.service.AuthService;
 import jakarta.security.auth.message.AuthException;
@@ -26,7 +27,10 @@ import java.util.Arrays;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String[] REQUESTS_PATHS_WHITELIST = {
-            "/" + ApiConstants.V1 + "/" + ApiConstants.CONTROLLER_AUTH + "/" + ApiConstants.RESOURCE_LOGIN
+            "/" + ApiConstants.V1 + "/" + ApiConstants.CONTROLLER_AUTH + "/" + ApiConstants.RESOURCE_LOGIN,
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/favicon.ico"
     };
 
     @Autowired
@@ -36,20 +40,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (Arrays.stream(REQUESTS_PATHS_WHITELIST).anyMatch(path -> path.equals(request.getRequestURI()))) {
+        if (Arrays.stream(REQUESTS_PATHS_WHITELIST).anyMatch(path -> request.getRequestURI().startsWith(path))) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        var token = headerAuth.split(" ")[1].trim();
-
         AuthUser user;
 
         try {
+            String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+            if (headerAuth == null || headerAuth.isEmpty())
+                throw new AuthorizationException();
+
+            var token = headerAuth.split(" ")[1].trim();
+
             user = authService.validateToken(token);
-        } catch (AuthenticationException e) {
+        } catch (AuthorizationException e) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid token.");
             return;
         }

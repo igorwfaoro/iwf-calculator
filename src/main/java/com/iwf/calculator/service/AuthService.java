@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.iwf.calculator.exception.AuthenticationException;
+import com.iwf.calculator.exception.AuthorizationException;
 import com.iwf.calculator.model.auth.AuthUser;
 import com.iwf.calculator.model.dto.input.AuthInputDto;
 import com.iwf.calculator.model.auth.AuthResult;
@@ -66,7 +67,7 @@ public class AuthService implements IAuthService {
         return null;
     }
 
-    public AuthUser validateToken(String token) throws AuthenticationException {
+    public AuthUser validateToken(String token) throws AuthorizationException {
 
         DecodedJWT decodedToken;
         try {
@@ -74,7 +75,7 @@ public class AuthService implements IAuthService {
                     .build()
                     .verify(token);
         } catch (Exception e) {
-            throw new AuthenticationException();
+            throw new AuthorizationException();
         }
 
         Long userId = decodedToken.getClaim(USER_ID_CLAIM).asLong();
@@ -82,7 +83,7 @@ public class AuthService implements IAuthService {
         var user = userRepository.findById(userId);
 
         if (user.isEmpty()) {
-            throw new AuthenticationException();
+            throw new AuthorizationException();
         }
 
         return AuthUser.fromEntity(user.get());
