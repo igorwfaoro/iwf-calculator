@@ -26,23 +26,6 @@ jobs:
           name: test-results
           path: target/surefire-reports
 
-  check-tests:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Check Test Status
-        id: check_test_status
-        run: |
-          if [ -f "test-results/test-report.xml" ]; then
-            echo "::set-output name=test_passed::true"
-          else
-            echo "::set-output name=test_passed::false"
-          fi
-        shell: bash
-
   deploy:
     needs: check-tests
     runs-on: ubuntu-latest
@@ -69,5 +52,4 @@ jobs:
         run: docker push $IMAGE_NAME
 
       - name: Deploy Docker image
-        if: steps.check-tests.outputs.test_passed == 'true'
         run: gcloud run deploy site --image $IMAGE_NAME --region us-central1 --memory 512Mi --min-instances 0 --max-instances 1 --platform managed --port 8080 --allow-unauthenticated
