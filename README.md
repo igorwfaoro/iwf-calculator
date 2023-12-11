@@ -4,7 +4,7 @@
 The Calculator API is a RESTful service that allows users to perform mathematical calculations. The service accepts mathematical expressions and returns the results. It also stores the expressions and results in an in-memory H2 database, allowing for caching and retrieval of previously calculated results.
 
 ## Demo
-You can access a demo of this project [here](https://site-azriopdjsa-uc.a.run.app/swagger-ui/index.html).
+You can access a demo of this project here: https://site-azriopdjsa-uc.a.run.app/swagger-ui/index.html
 
 #### Default users:
 
