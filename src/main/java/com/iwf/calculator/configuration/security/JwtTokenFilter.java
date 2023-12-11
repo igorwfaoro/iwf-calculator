@@ -1,12 +1,9 @@
 package com.iwf.calculator.configuration.security;
 
-import com.auth0.jwt.JWT;
 import com.iwf.calculator.constant.ApiConstants;
-import com.iwf.calculator.exception.AuthenticationException;
 import com.iwf.calculator.exception.AuthorizationException;
 import com.iwf.calculator.model.auth.AuthUser;
 import com.iwf.calculator.service.AuthService;
-import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +24,7 @@ import java.util.Arrays;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private static final String[] REQUESTS_PATHS_WHITELIST = {
-            "/" + ApiConstants.V1 + "/" + ApiConstants.CONTROLLER_AUTH + "/" + ApiConstants.RESOURCE_LOGIN,
+            ApiConstants.CONTROLLER_AUTH_ROUTE + "/" + ApiConstants.RESOURCE_AUTH_LOGIN,
             "/swagger-ui",
             "/v3/api-docs",
             "/favicon.ico"

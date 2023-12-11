@@ -20,8 +20,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-//    private static final String LOGIN_ROUTE = ApiConstants.V1 + "/" + ApiConstants.CONTROLLER_AUTH + "/" + ApiConstants.RESOURCE_LOGIN;
-
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
@@ -30,11 +28,6 @@ public class WebSecurityConfig {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(authorize -> authorize
-////                        .requestMatchers("/v1/auth/login").permitAll()
-////                        .anyRequest().authenticated()
-//                                .anyRequest().permitAll()
-//                )
                 .addFilterBefore(new CorsFilter(corsConfigurationSource()), LogoutFilter.class)
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
