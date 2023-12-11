@@ -27,7 +27,7 @@ jobs:
           path: target/surefire-reports
 
   deploy:
-    needs: check-tests
+    needs: build-and-test
     runs-on: ubuntu-latest
     environment: gcp-prod
     env:
