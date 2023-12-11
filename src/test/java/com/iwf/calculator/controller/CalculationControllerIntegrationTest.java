@@ -130,7 +130,7 @@ public class CalculationControllerIntegrationTest {
     @Test
     public void shouldReturnAllCalculations() throws Exception {
         var calculations = new LinkedList<CalculationViewDto>();
-        calculations.add(new CalculationViewDto(1L, "2+2", 4444F));
+        calculations.add(new CalculationViewDto(1L, "2+2", 4F));
         calculations.add(new CalculationViewDto(2L, "5/2", 2.5F));
         calculations.add(new CalculationViewDto(3L, "4*5", 20F));
         calculations.add(new CalculationViewDto(4L, "10-3", 7F));
