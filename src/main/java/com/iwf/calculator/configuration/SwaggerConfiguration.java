@@ -19,14 +19,6 @@ public class SwaggerConfiguration {
                 .info(new Info().title("IWF Calculator API").version("1.0.0"));
     }
 
-    @Bean
-    public GroupedOpenApi httpApi() {
-        return GroupedOpenApi.builder()
-                .group("http")
-                .pathsToMatch("/**")
-                .build();
-    }
-
     private SecurityScheme createAPIKeyScheme() {
         return new SecurityScheme().type(SecurityScheme.Type.HTTP)
                 .bearerFormat("JWT")
